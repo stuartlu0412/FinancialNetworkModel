@@ -5,7 +5,7 @@ import matplotlib.animation as animation
 import pandas as pd
 from scipy import stats
 
-class FinancialMarketModel:
+class BornholdtModel:
     def __init__(self, N=75, p=0.5, alpha=20, beta=2):
         self.N = N
         self.p = p
@@ -153,7 +153,7 @@ class FinancialMarketModel:
 
 
 if __name__ == '__main__':
-    market_model = FinancialMarketModel()
+    market_model = BornholdtModel()
     market_model.init_market()
     market_model.simulate()
     market_model.plot_magnetization()
