@@ -89,6 +89,7 @@ class FinancialMarketModel:
             self.M_t_values = pd.read_csv(f'M_t.csv')
         #returns = np.log(pd.Series(self.M_t_values).pct_change() + 1)
         returns = np.log(self.M_t_values/self.M_t_values.shift(1))
+        #returns = self.M_t_values - self.M_t_values.shift(1)
         plt.figure(figsize=(10, 6))
         plt. plot(returns, label='Returns')
         plt.title('Returns Over Time')
