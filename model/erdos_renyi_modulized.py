@@ -3,22 +3,27 @@ import networkx as nx
 import random
 import matplotlib.pyplot as plt
 from matplotlib import animation
-from bornholdt_modulized import FinancialMarketModel
+from bornholdt_modulized import BornholdtModel
 
-class ErdosRenyiModel(FinancialMarketModel):
+SAVE_PATH = f'/Users/stuartlu/Documents/Complex System/Financial Network Model/results/'
 
-    def __init__(self):
+
+class ErdosRenyiModel(BornholdtModel):
+
+    def __init__(self, alpha=20, beta=0.8):
 
         #initialize
-        self.N = 1000
+        self.seed = 123  
+        random.seed(self.seed)
+        self.N = 50000
         self.p = 0.5
         self.k = 4 #average degree is 4
-        self.G = nx.gnp_random_graph(self.N, 2*self.k/(self.N-1))
+        self.G = nx.gnp_random_graph(self.N, 2*self.k/(self.N-1), seed = self.seed)
         
         #self.pos = nx.nx_pydot.pydot_layout(self.G)
-        self.alpha = 20
-        self.beta = 2
-
+        self.alpha = alpha
+        self.beta = beta
+       
     def init_market(self):
         for node in self.G.nodes():
             self.G.nodes[node]['S'] = np.random.choice([-1, 1])
@@ -58,6 +63,9 @@ class ErdosRenyiModel(FinancialMarketModel):
                 self.G.nodes[node]['S'] == -1
                 self.M_t -= 2
 
+        if self.M_t > self.N:
+            raise Exception("M_t out of bound")
+
     def plot_frame(self):
 
         value_color_map = {1: 'yellow', -1: 'purple'}
@@ -86,17 +94,38 @@ class ErdosRenyiModel(FinancialMarketModel):
         if ani == True:
             self.simulate_ani(frames=frames)
         else:
+            return
             
-
-        
-
 if __name__ == '__main__':
+    '''
     market = ErdosRenyiModel()
     market.init_market()
     #market.plot_market()
-    market.simulate(frames=3000)
-    market.plot_magnetization()
-    market.plot_returns()
-    market.plot_autocorrelation()
-    market.plot_return_distribution()
-    market.plot_powerlaw()
+    market.simulate(frames=3000, ani=True)
+    market.save_magnetization()
+    market.plot_magnetization(path = SAVE_PATH)
+    market.plot_returns(path = SAVE_PATH)
+    market.plot_autocorrelation(path = SAVE_PATH)
+    market.plot_return_distribution(path = SAVE_PATH)
+    market.plot_powerlaw(path = SAVE_PATH)
+    '''
+    '''
+    for alpha in [10, 15, 20, 25, 30]:
+        for beta in [0.8, 0.9, 1, 1.1]:
+            print(f'alpha = {alpha}, beta={beta}')
+            market = ErdosRenyiModel(alpha, beta)
+            market.init_market()
+            #market.plot_market()
+            market.simulate(frames=3000, ani=True)
+            market.save_magnetization()
+    '''
+
+    alpha = 10
+    beta = 0.9
+
+    print(f'alpha = {alpha}, beta={beta}')
+    market = ErdosRenyiModel(alpha, beta)
+    market.init_market()
+    #market.plot_market()
+    market.simulate(frames=3000, ani=True)
+    market.save_magnetization()

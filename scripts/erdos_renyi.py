@@ -4,14 +4,15 @@ import random
 import matplotlib.pyplot as plt
 
 #initialize
-N = 100
+N = 10000
 p = 0.5
-k = 4
+k = 4 #average degree is 4
 G = nx.gnp_random_graph(N, 2*k/(N-1))
 
 alpha = 20
 beta = 2
 
+#initialize market
 for node in G.nodes():
     G.nodes[node]['S'] = np.random.choice([-1, 1])
     G.nodes[node]['C'] = np.random.choice([-1, 1])

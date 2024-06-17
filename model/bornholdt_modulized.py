@@ -5,7 +5,7 @@ import matplotlib.animation as animation
 import pandas as pd
 from scipy import stats
 
-SAVE_PATH = f'/Users/stuartlu/Documents/Complex System/Financial Network Model/results/'
+SAVE_PATH = f'/Users/stuartlu/Documents/中研院/Financial Network Model/results/'
 
 class BornholdtModel():
 
@@ -77,6 +77,7 @@ class BornholdtModel():
             h = local - self.C[rand_x, rand_y] * self.alpha * self.M_t / (self.L**2)
             p = 1 / (1 + np.exp(-self.beta * h))
 
+            self.C[rand_x][rand_y] = -self.C[rand_x][rand_y] if self.S[rand_x][rand_y] * self.C[rand_x][rand_y] * self.M_t < 0 else self.C[rand_x][rand_y]
             rand = random.random()
 
             if rand < p:
@@ -115,23 +116,25 @@ class BornholdtModel():
         plt.ylabel('Magnetization (M_t)')
         plt.legend()
         plt.grid(True)
-        plt.show()
         if save == True: 
             plt.savefig(path + 'magnetization.png')
 
+        plt.show()
+
     def plot_returns(self, save = True, path = SAVE_PATH):
         #returns = np.log(pd.Series(self.M_t_values).pct_change() + 1)
+        self.M_t_values = pd.Series(self.M_t_values)
         returns = np.log(self.M_t_values/self.M_t_values.shift(1))
         plt.figure(figsize=(10, 6))
-        plt. plot(returns, label='Returns')
+        plt.plot(returns, label='Returns')
         plt.title('Returns Over Time')
         plt.xlabel('Frame')
         plt.ylabel('Returns')
         plt.legend()
         plt.grid(True)
-        plt.show()
         if save == True: 
             plt.savefig(path + 'returns.png')
+        plt.show()
 
     def plot_nb_value(self, save = True, path = SAVE_PATH):
         NB_t_values = pd.Series(NB_t_values)
@@ -143,18 +146,20 @@ class BornholdtModel():
         plt.legend()
         plt.grid(True)
         plt.savefig(f'./Result/Disorder_N={self.L}.png')
-        plt.show()
         if save == True: 
             plt.savefig(path + 'disorder.png')
+
+        plt.show()
 
     def plot_return_distribution(self, save = True, path = SAVE_PATH):
         returns = np.log(self.M_t_values/self.M_t_values.shift(1))
         excess_kurtosis = stats.kurtosis(returns[np.isfinite(returns)])
         plt.hist(returns[np.isfinite(returns)], bins=100)
         plt.title(f'Distribution of Returns: Excess Kurtosis = {excess_kurtosis}')
-        plt.show()
         if save == True: 
             plt.savefig(path + 'return_distribution.png')
+
+        plt.show()
 
     def plot_autocorrelation(self, save = True, path = SAVE_PATH):
         returns = np.log(self.M_t_values/self.M_t_values.shift(1))
@@ -169,20 +174,20 @@ class BornholdtModel():
         plt.title('Autocorrelation of Returns')
         plt.xlabel('Lag')
         plt.ylabel('ACF Returns')
-        plt.show()
 
         if save == True: 
             plt.savefig(path + 'ACF_return.png')
+        plt.show()
 
         plt.figure(figsize=(10, 6))
         plt.bar(range(lags), acf_abs, color='red')
         plt.title('Autocorrelation of Absolute Returns')
         plt.xlabel('Lag')
         plt.ylabel('ACF Absolute Returns')
-        plt.show()
 
         if save == True: 
             plt.savefig(path + 'ACF_absolute_return.png')
+        plt.show()
 
     def plot_powerlaw(self, save = True, path = SAVE_PATH):
         returns = np.log(self.M_t_values/self.M_t_values.shift(1))
@@ -206,13 +211,13 @@ class BornholdtModel():
         plt.ylabel('Cumulative Probability (log scale)')
         plt.legend()
         plt.grid(True)
-        plt.show()
         if save == True: 
             plt.savefig(path + 'powerlaw.png')
+        plt.show()
 
     def save_magnetization(self):
         self.M_t_values = pd.Series(self.M_t_values)
-        self.M_t_values.to_csv(SAVE_PATH + f'M_t_{self.N}.csv')
+        self.M_t_values.to_csv(SAVE_PATH + f'M_t_{self.N}_{self.alpha}_{self.beta}.csv')
 
 
 if __name__ == '__main__':
