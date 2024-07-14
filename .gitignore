@@ -162,5 +162,6 @@ cython_debug/
 #.idea/
 
 *.ini
+*.csv
 .DS_Store
 .vscode/
