@@ -1,3 +1,0 @@
-from bornholdt_modulized import BornholdtModel
-from erdos_renyi_modulized import ErdosRenyiModel
-from small_world_modulized import SmallWorldModel
