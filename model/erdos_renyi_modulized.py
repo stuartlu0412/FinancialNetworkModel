@@ -56,11 +56,11 @@ class ErdosRenyiModel(BornholdtModel):
         rand = random.random()
         if rand < p:
             if self.G.nodes[node]['S'] == -1:
-                self.G.nodes[node]['S'] == 1
+                self.G.nodes[node]['S'] = 1
                 self.M_t += 2
         else:
             if self.G.nodes[node]['S'] == 1:
-                self.G.nodes[node]['S'] == -1
+                self.G.nodes[node]['S'] = -1
                 self.M_t -= 2
 
         if self.M_t > self.N:
@@ -76,8 +76,6 @@ class ErdosRenyiModel(BornholdtModel):
 
     def update_mcs(self, frame):
 
-        self.ax.clear()
-
         for _ in range(self.N):
             rand_node = random.randint(0, self.N-1)
             self.update_node(rand_node)
@@ -85,16 +83,12 @@ class ErdosRenyiModel(BornholdtModel):
         self.M_t_values.append(self.M_t)
         print(f'MCS = {frame}')
 
-    def simulate_ani(self, frames):
-        self.fig, self.ax = plt.subplots()
-        self.ani = animation.FuncAnimation(self.fig, self.update_mcs, frames=frames, interval = 1, repeat=False)
-        plt.show()
-
-    def simulate(self, frames = 3000, ani=False):
-        if ani == True:
-            self.simulate_ani(frames=frames)
-        else:
-            return
+    def simulate(self, frames = 3000):
+        print('debug')
+        for t in range(frames):
+            #print(f'start loop {t}')
+            self.update_mcs(t)
+            #print(f'end loop {t}')
             
 if __name__ == '__main__':
     '''
@@ -127,5 +121,5 @@ if __name__ == '__main__':
     market = ErdosRenyiModel(alpha, beta)
     market.init_market()
     #market.plot_market()
-    market.simulate(frames=3000, ani=True)
+    market.simulate(frames=3000)
     market.save_magnetization()

@@ -230,3 +230,4 @@ if __name__ == '__main__':
     market_model.plot_return_distribution()
     market_model.plot_powerlaw()
     market_model.plot_nb_value()
+    market_model.save_magnetization()
