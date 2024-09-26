@@ -3,7 +3,7 @@ This file do the experiment of small world network model on different beta, hold
 '''
 import numpy as np
 import pandas as pd
-from small_world_modulized import SmallWorldModel
+from model.small_world import SmallWorldModel
 
 alpha = 10
 

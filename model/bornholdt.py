@@ -9,7 +9,7 @@ SAVE_PATH = f'/Users/stuartlu/Documents/中研院/Financial Network Model/result
 
 class BornholdtModel():
 
-    def __init__(self, L=75, p=0.5, alpha=20, beta=2):
+    def __init__(self, L=200, p=0.5, alpha=20, beta=2):
         self.L = L
         self.p = p
         self.alpha = alpha
@@ -217,17 +217,19 @@ class BornholdtModel():
 
     def save_magnetization(self):
         self.M_t_values = pd.Series(self.M_t_values)
-        self.M_t_values.to_csv(SAVE_PATH + f'M_t_{self.N}_{self.alpha}_{self.beta}.csv')
+        self.M_t_values.to_csv(SAVE_PATH + f'M_t_{self.L}_{self.alpha}_{self.beta}.csv')
 
 
 if __name__ == '__main__':
     market_model = BornholdtModel()
     market_model.init_market()
     market_model.simulate()
-    market_model.plot_magnetization()
-    market_model.plot_returns()
-    market_model.plot_autocorrelation()
-    market_model.plot_return_distribution()
-    market_model.plot_powerlaw()
-    market_model.plot_nb_value()
-    market_model.save_magnetization()
+    df = pd.concat([pd.Series(market_model.M_t_values), pd.Series(market_model.NB_t_values)], axis = 1)
+    df.to_csv('test.csv')
+    #market_model.plot_magnetization()
+    #market_model.plot_returns()
+    #market_model.plot_autocorrelation()
+    #market_model.plot_return_distribution()
+    #market_model.plot_powerlaw()
+    #market_model.plot_nb_value()
+    #market_model.save_magnetization()

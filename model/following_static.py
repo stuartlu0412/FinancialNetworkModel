@@ -5,7 +5,7 @@ import matplotlib.animation as animation
 import pandas as pd
 from scipy import stats\
 import math
-from bornholdt_modulized import BornholdtModel
+from model.bornholdt import BornholdtModel
 
 class StaticFollowerModel(BornholdtModel):
 

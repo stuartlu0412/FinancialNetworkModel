@@ -3,52 +3,32 @@ import networkx as nx
 import random
 import matplotlib.pyplot as plt
 
-#initialize
-N = 10000
-p = 0.5
-k = 4 #average degree is 4
-G = nx.gnp_random_graph(N, 2*k/(N-1))
+def run_simulation(alpha = 10, beta = 0.7):
 
-alpha = 20
-beta = 2
+    #initialize
+    seed = 123
+    random.seed(seed)
+    N = 50000
+    p = 0.5
+    k = 4 #average degree is 4
+    G = nx.gnp_random_graph(N, 2*k/(N-1), seed = seed)
 
-#initialize market
-for node in G.nodes():
-    G.nodes[node]['S'] = np.random.choice([-1, 1])
-    G.nodes[node]['C'] = np.random.choice([-1, 1])
+    #variables that records all the values for further analysis
+    M_t = 0 # magnetization
+    F_t = 0 # number of fundamentalists
+    M_t_values = []
+    F_t_values = []
 
-#set color for the plot
-value_color_map = {1: 'yellow', -1: 'purple'}
-colors = [value_color_map[G.nodes[node]['S']] for node in G.nodes()]
+    #initialize the market
+    for node in G.nodes():
+            G.nodes[node]['S'] = np.random.choice([-1, 1])
+            G.nodes[node]['C'] = np.random.choice([-1, 1])
 
-nx.draw(G, node_color=colors)
-plt.show()
+    M_t = sum(nx.get_node_attributes(G, 'S').values())
+    F_t = sum([G.nodes[node]['C'] for node in G.nodes if G.nodes[node]['C'] == 1])
 
-def calculate_neighbor_sum(node):
-    neighbor_sum = sum(G.nodes[neighbor]['S'] for neighbor in G.neighbors(node))
-    return neighbor_sum
+    M_t_values.append(M_t)
+    F_t_values.append(F_t)
 
-def update_node(node):
-    local = calculate_neighbor_sum(node)
-    h = local - G.nodes[node]['C'] * alpha * M_t / N
-    p = 1/(1 + np.exp(-beta*h))
+    
 
-    #update C
-    G.nodes[node]['C'] = -G.nodes[node]['C'] if G.nodes[node]['S'] * G.nodes[node]['C'] * M_t < 0 else G.nodes[node]['C']
-
-    #update S
-    rand = random.random()
-    if rand < p:
-        if G.nodes[node]['S'] == -1:
-            G.nodes[node]['S'] == 1
-            M_t += 2
-    else:
-        if G.nodes[node]['S'] == 1:
-            G.nodes[node]['S'] == -1
-            M_t -= 2
-
-#set variables
-M_t = sum(nx.get_node_attributes(G, 'S').values())
-print(M_t)
-
-#def update()
