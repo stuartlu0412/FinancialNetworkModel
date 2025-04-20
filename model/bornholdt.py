@@ -9,7 +9,7 @@ SAVE_PATH = f'/Users/stuartlu/Documents/中研院/Financial Network Model/result
 
 class BornholdtModel():
 
-    def __init__(self, L=200, p=0.5, alpha=20, beta=2):
+    def __init__(self, alpha=20, beta=2, L=200, p=0.5):
         self.L = L
         self.p = p
         self.alpha = alpha
@@ -100,13 +100,18 @@ class BornholdtModel():
         return self.img,
 
     def simulate(self, frames=3000):
+        
+        # with plotting
         fig, ax = plt.subplots()
         self.img = ax.imshow(self.S, animated=True)
         ani = animation.FuncAnimation(fig, self.update, frames=frames, interval=1, blit=True, repeat = False)
         plt.show()
-        
-        #print(self.M_t_values)
         pd.Series(self.M_t_values).to_csv('M_t.csv')
+        
+
+        print(f'Start simulating with Alpha = {self.alpha}, Beta = {self.beta}')
+        for t in range(frames):
+            self.update(t)
 
     def plot_magnetization(self, save = True, path = SAVE_PATH):
         plt.figure(figsize=(10, 6))
