@@ -22,8 +22,8 @@ def run_simulation(Model, alpha, beta):
 if __name__ == '__main__':
 
     # Set the range for alpha and beta
-    alpha_range = [10, 20, 30, 40, 50]
-    beta_range = [0.2, 0.4, 0.6, 0.8, 1, 1.2]
+    alpha_range = [10, 20]#, 30, 40, 50]
+    beta_range = [0.2, 0.4]#, 0.6, 0.8, 1, 1.2]
 
     param = [(BornholdtModel, alpha, beta) for alpha in alpha_range for beta in beta_range] # Pack alpha and beta into one list of tuples.
 

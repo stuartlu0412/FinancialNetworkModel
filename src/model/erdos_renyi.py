@@ -17,7 +17,7 @@ class ErdosRenyiModel():
         self.seed = 123
         random.seed(self.seed)
         self.N = 50000
-        self.p = 0.5
+        self.p = 0.5 # what is this for???
         self.k = 4 #average degree is 4
         self.G = nx.gnp_random_graph(self.N, 2*self.k/(self.N-1), seed = self.seed)
         
