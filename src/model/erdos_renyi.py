@@ -4,12 +4,12 @@ import networkx as nx
 import random
 import matplotlib.pyplot as plt
 from matplotlib import animation
-from model.bornholdt import BornholdtModel
+from model.basemodel import BaseMarketModel
 
 SAVE_PATH = f'/Users/stuartlu/Documents/Complex System/Financial Network Model/results/'
 
 
-class ErdosRenyiModel():
+class ErdosRenyiModel(BaseMarketModel):
 
     def __init__(self, alpha=20, beta=0.8):
 

@@ -4,12 +4,13 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import pandas as pd
 from scipy import stats
+from model.basemodel import BaseMarketModel
 
-SAVE_PATH = f'/Users/stuartlu/Documents/中研院/Financial Network Model/results/'
+SAVE_PATH = f'./results/'
 
-class BornholdtModel():
+class BornholdtModel(BaseMarketModel):
 
-    def __init__(self, alpha=20, beta=2, L=200, p=0.5):
+    def __init__(self, alpha=20, beta=2, L=20, p=0.5):
         self.L = L
         self.p = p
         self.alpha = alpha
@@ -84,19 +85,18 @@ class BornholdtModel():
                 if self.S[rand_x][rand_y] == -1:
                     self.S[rand_x][rand_y] = 1
                     self.M_t += 2
-                    update_NB_for_agent(rand_x, rand_y)
+                    #update_NB_for_agent(rand_x, rand_y)
             else:
                 if self.S[rand_x][rand_y] == 1:
                     self.S[rand_x][rand_y] = -1
                     self.M_t -= 2
-                    update_NB_for_agent(rand_x, rand_y)
+                    #update_NB_for_agent(rand_x, rand_y)
 
         self.M_t_values.append(self.M_t)
         self.NB_t_values.append(self.NB_t)
 
         self.img.set_array(self.S)
         plt.title(f'Ising simulation of Financial Market')   
-        
         return self.img,
 
     def simulate(self, frames=3000):
@@ -107,7 +107,6 @@ class BornholdtModel():
         ani = animation.FuncAnimation(fig, self.update, frames=frames, interval=1, blit=True, repeat = False)
         plt.show()
         pd.Series(self.M_t_values).to_csv('M_t.csv')
-        
 
         print(f'Start simulating with Alpha = {self.alpha}, Beta = {self.beta}')
         for t in range(frames):
@@ -123,7 +122,6 @@ class BornholdtModel():
         plt.grid(True)
         if save == True: 
             plt.savefig(path + 'magnetization.png')
-
         plt.show()
 
     def plot_returns(self, save = True, path = SAVE_PATH):

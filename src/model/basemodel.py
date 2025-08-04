@@ -2,7 +2,6 @@
 Base class for all market models.
 All market models should inherit from this class and implement the abstract methods.
 '''
-import numpy as np
 from abc import ABC, abstractmethod
 
 class BaseMarketModel(ABC):
@@ -12,7 +11,7 @@ class BaseMarketModel(ABC):
         raise NotImplementedError("Subclasses must implement this method")
 
     @abstractmethod
-    def update_market(self):
+    def update(self):
         raise NotImplementedError("Subclasses must implement this method")
 
     @abstractmethod
