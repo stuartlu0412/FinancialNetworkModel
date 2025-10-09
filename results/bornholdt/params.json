@@ -1,0 +1,12 @@
+{
+  "git_revision": "666bd45b2cd0af7faf187f404b01b206443f8942",
+  "params": {
+    "seed": 42,
+    "alpha": 20,
+    "beta": 2,
+    "L": 50,
+    "p": 0.5,
+    "M_t": -24,
+    "NB_t": 4996
+  }
+}
