@@ -1,10 +1,11 @@
-import numpy as np
 import random
+import numpy as np
 import pandas as pd
-from model.basemodel import BaseMarketModel
-from model.plot_mixin import LivePlotMixin
+from src.model.basemodel import BaseMarketModel
+from src.utils.plot_mixin import LivePlotMixin
 
 class BornholdtModel(LivePlotMixin, BaseMarketModel):
+    
     def __init__(
         self,
         alpha: float = 20,
@@ -13,11 +14,14 @@ class BornholdtModel(LivePlotMixin, BaseMarketModel):
         p: float = 0.5,
         seed: int = 123
     ) -> None:
+    
         super().__init__(seed)
         self.alpha = alpha
         self.beta = beta
         self.L = L
         self.p = p
+        self.F_t = 0
+        self.F_t_values = []
 
     def initialize(self) -> None:
         # initial spins S and strategies C
@@ -27,6 +31,10 @@ class BornholdtModel(LivePlotMixin, BaseMarketModel):
         # magnetization
         self.M_t = int(self.S.sum())
         self.M_t_values = [self.M_t]
+
+        # number of fundamentalists
+        self.F_t = int((self.C == 1).sum())
+        self.F_t_values = [self.F_t]
 
         # initial disorder count NB and its time series
         self.NB = self._compute_initial_NB()
@@ -77,6 +85,8 @@ class BornholdtModel(LivePlotMixin, BaseMarketModel):
         # record after the full sweep
         self.M_t_values.append(self.M_t)
         self.NB_t_values.append(self.NB_t)
+        self.F_t = int((self.C == 1).sum())
+        self.F_t_values.append(self.F_t)
 
     def _update_NB(self, i: int, j: int) -> None:
         # adjust local NB and NB_t for spin change at (i,j)
@@ -93,7 +103,7 @@ class BornholdtModel(LivePlotMixin, BaseMarketModel):
 
     # ─── Hooks for LivePlotMixin ──────────────────────────────────────────────
     def _render(self, ax):
-        self.img = ax.imshow(self.S, animated=True, cmap="coolwarm")
+        self.img = ax.imshow(self.S, animated=True)
         return self.img
 
     def _get_frame_data(self):
@@ -112,12 +122,14 @@ class BornholdtModel(LivePlotMixin, BaseMarketModel):
            seeds RNGs, re-initializes, runs `step()` `frames` times,
            and dumps params + timeseries.csv if `output_dir` is set.
         """
+        '''
         # 1) seed RNGs
         import random as _rand, numpy as _np
         _rand.seed(self.seed)
         _np.random.seed(self.seed)
         # 2) build initial state
         self.initialize()
+        '''
         #  3) now live‐plot that state as you step
         if do_plot:
            self.animate(frames, interval=1)
@@ -130,10 +142,11 @@ if __name__ == "__main__":
     model = BornholdtModel(L=50, p=0.5, alpha=20, beta=2, seed=42)
 
     # 2) run with live plotting (do_plot=True) or headless (do_plot=False)
+    model.initialize()
     df = model.simulate(
         frames=3000,
         output_dir="results/bornholdt",  # will be created if needed
-        do_plot=True
+        do_plot=False
     )
 
     # 3) df is a pandas.DataFrame of your time series (M_t, NB_t)

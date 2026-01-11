@@ -2,12 +2,13 @@
 Base class for all market models.
 All market models should inherit from this class and implement the abstract methods.
 '''
-from abc import ABC, abstractmethod
 import random
 import numpy as np
 import pandas as pd
 import json
 import subprocess
+from tqdm.auto import tqdm
+from abc import ABC, abstractmethod
 
 class BaseMarketModel(ABC):
     """
@@ -65,13 +66,14 @@ class BaseMarketModel(ABC):
         if output_dir:
             self._snapshot_params(output_dir)
 
-        for t in range(n_steps):
+        for t in tqdm(range(n_steps)):
             self.step()
 
         # assume subclass has built e.g. self.M_t_values, self.F_t_values
         df = pd.DataFrame({
             "M_t": self.M_t_values,
-            "F_t": getattr(self, "F_t_values", None)
+            "F_t": getattr(self, "F_t_values", None),
+            "NB_t": getattr(self, "NB_t_values", None)
         })
         if output_dir:
             df.to_csv(f"{output_dir}/timeseries.csv", index=False)

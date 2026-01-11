@@ -1,13 +1,13 @@
 {
   "git_revision": "dd1bfa356e24fb4fb6c7636f777fa99c496ba0c2",
   "params": {
-    "seed": 42,
+    "seed": 123,
     "alpha": 20,
     "beta": 2,
-    "L": 50,
+    "N": 50000,
+    "k": 4,
     "p": 0.5,
-    "F_t": 1262,
-    "M_t": -24,
-    "NB_t": 4996
+    "F_t": 24867,
+    "NB_t": 100029
   }
 }
