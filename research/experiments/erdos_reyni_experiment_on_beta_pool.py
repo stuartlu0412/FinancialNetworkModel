@@ -1,9 +1,12 @@
 '''
 This file do the experiment of Erdős-Rényi network model on different beta, holding alpha constant.
 '''
-import numpy as np
+import os
+import json
+import subprocess
 import pandas as pd
 import multiprocessing as mp
+from datetime import datetime
 from src.model.erdos_renyi import ErdosRenyiModel
 
 def run_simulation(Model, alpha, beta):
@@ -12,7 +15,7 @@ def run_simulation(Model, alpha, beta):
 
     market = Model(alpha, beta)
     market.initialize()
-    market.simulate(frames=3000)
+    market.simulate(frames=5000)
 
     print(f'Simulation for alpha = {alpha}, beta={beta} ended.')
     
@@ -22,7 +25,7 @@ if __name__ == '__main__':
 
     # Set the range for alpha and beta
     alpha_range = [10, 20, 30, 40, 50]
-    beta_range = [0.2, 0.4, 0.6, 0.8, 1, 1.2]
+    beta_range = [0.2, 0.6, 1.2, 1.6, 2, 2.4, 2.6]
 
     param = [(ErdosRenyiModel, alpha, beta) for alpha in alpha_range for beta in beta_range] # Pack alpha and beta into one list of tuples.
 
@@ -51,8 +54,46 @@ if __name__ == '__main__':
     F_t_df.columns = pd.MultiIndex.from_tuples(F_t_df.columns, names=['alpha', 'beta'])
     NB_t_df.columns = pd.MultiIndex.from_tuples(NB_t_df.columns, names=['alpha', 'beta'])
 
-    M_t_df.to_csv('./results/erdos_renyi/magnetization.csv')
-    F_t_df.to_csv('./results/erdos_renyi/fc_ratio.csv')
-    NB_t_df.to_csv('./results/erdos_renyi/disorder_bonds.csv')
+    # Output experiment results
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    base_dir = os.path.join(script_dir, '../../results/erdos_renyi')
+    output_dir = os.path.join(base_dir, f'alpha_beta_sweep_{timestamp}')
 
-    print(f'All results saved to ./results/erdos_renyi/')
+    os.makedirs(output_dir, exist_ok=True)
+    
+    M_t_df.to_csv(f'{output_dir}/magnetization.csv')
+    F_t_df.to_csv(f'{output_dir}/fc_ratio.csv')
+    NB_t_df.to_csv(f'{output_dir}/disorder_bonds.csv')
+
+    print(f'All results saved to {output_dir}')
+
+    # Output experiment metadata
+    git_rev = subprocess.check_output(
+        ["git", "rev-parse", "HEAD"]
+    ).decode().strip()
+    
+    experiment_metadata = {
+        "experiment_name": "erdos_renyi_alpha_beta_sweep",
+        "timestamp": datetime.now().isoformat(),
+        "git_revision": git_rev,
+        "model": "ErdosRenyiModel",
+        "parameters": {
+            "alpha_range": alpha_range,
+            "beta_range": beta_range,
+            "frames": 5000,
+            "total_simulations": len(param),
+            "n_workers": mp.cpu_count()
+        },
+        "output_files": {
+            "magnetization": "magnetization.csv",
+            "fc_ratio": "fc_ratio.csv",
+            "disorder_bonds": "disorder_bonds.csv"
+        }
+    }
+    
+    with open(f'{output_dir}/experiment_metadata.json', 'w') as f:
+        json.dump(experiment_metadata, f, indent=2)
+    
+    print(f'Metadata saved to experiment_metadata.json')

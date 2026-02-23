@@ -12,6 +12,7 @@ class BornholdtModel(LivePlotMixin, BaseMarketModel):
         beta: float = 2,
         L: int = 20,
         p: float = 0.5,
+        use_abs_M: bool = False,
         seed: int = 123
     ) -> None:
     
@@ -20,6 +21,7 @@ class BornholdtModel(LivePlotMixin, BaseMarketModel):
         self.beta = beta
         self.L = L
         self.p = p
+        self.use_abs_M = use_abs_M
         self.F_t = 0
         self.F_t_values = []
 
@@ -62,8 +64,9 @@ class BornholdtModel(LivePlotMixin, BaseMarketModel):
                 self.S[(i-1)%self.L, j] + self.S[(i+1)%self.L, j] +
                 self.S[i, (j-1)%self.L] + self.S[i, (j+1)%self.L]
             )
-            # total field h
-            h = local - self.C[i, j] * self.alpha * self.M_t / (self.L**2)
+            # total field h (optionally use |M_t| for comparison experiments)
+            M_eff = abs(self.M_t) if self.use_abs_M else self.M_t
+            h = local - self.C[i, j] * self.alpha * M_eff / (self.L**2)
             p_flip = 1 / (1 + np.exp(-self.beta * h))
 
             # update strategy C if misaligned with global magnetization

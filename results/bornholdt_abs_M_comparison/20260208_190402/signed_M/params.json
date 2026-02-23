@@ -1,0 +1,9 @@
+{
+  "use_abs_M": false,
+  "alpha": 20,
+  "beta": 2,
+  "L": 50,
+  "p": 0.5,
+  "frames": 3000,
+  "seed": 42
+}

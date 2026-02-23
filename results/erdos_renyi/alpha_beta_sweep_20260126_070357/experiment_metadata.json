@@ -1,0 +1,32 @@
+{
+  "experiment_name": "erdos_renyi_alpha_beta_sweep",
+  "timestamp": "2026-01-26T07:03:58.200722",
+  "git_revision": "9166bda904bb603988300bc84d792ca9956bb5f3",
+  "model": "ErdosRenyiModel",
+  "parameters": {
+    "alpha_range": [
+      10,
+      20,
+      30,
+      40,
+      50
+    ],
+    "beta_range": [
+      0.2,
+      0.6,
+      1.2,
+      1.6,
+      2,
+      2.4,
+      2.6
+    ],
+    "frames": 5000,
+    "total_simulations": 35,
+    "n_workers": 8
+  },
+  "output_files": {
+    "magnetization": "magnetization.csv",
+    "fc_ratio": "fc_ratio.csv",
+    "disorder_bonds": "disorder_bonds.csv"
+  }
+}

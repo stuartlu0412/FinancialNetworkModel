@@ -1,0 +1,17 @@
+{
+  "experiment": "bornholdt_abs_M_comparison",
+  "timestamp": "2026-02-08T19:05:24.994196",
+  "git_revision": "9166bda904bb603988300bc84d792ca9956bb5f3",
+  "parameters": {
+    "alpha": 20,
+    "beta": 2,
+    "L": 50,
+    "p": 0.5,
+    "frames": 3000,
+    "seed": 42
+  },
+  "output_dirs": {
+    "signed_M": "signed_M",
+    "abs_M": "abs_M"
+  }
+}
